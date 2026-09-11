@@ -12,85 +12,35 @@ export const Footer: React.FC<FooterProps> = ({ activeTab, setActiveTab, onOpenL
   const isAdmin = currentUser?.role === 'Administrator' || currentUser?.role === 'Admin' || currentUser?.role === 'System Administrator';
 
   return (
-    <footer className="bg-[#1c1d1f] text-gray-300 w-full mt-auto border-t-4 border-[#af101a]">
-      <div className="w-full py-12 px-6 max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between gap-10">
-        <div className="flex flex-col gap-3 max-w-sm">
-          <div className="text-2xl font-extrabold text-white flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#af101a] text-[32px] fill" data-weight="fill">
+    <footer className="bg-[#1c1d1f] text-gray-400 w-full mt-auto border-t-2 border-[#af101a]">
+      <div className="w-full py-6 px-6 max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+        <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-6">
+          <div className="text-lg font-black text-white flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#af101a] text-[24px] fill" data-weight="fill">
               hub
             </span>
-            Smart Disaster Management System
+            SDMS Kerala
           </div>
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Statewide disaster response, emergency shelter tracking, and rapid resource logistics network for Kerala.
-          </p>
-          <div className="mt-2 flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse" />
-            <span className="text-xs font-semibold text-gray-300">
-              State Control Room Signal Active • 24/7 Monitored
+          <div className="flex items-center gap-2 bg-gray-800/50 px-3 py-1 rounded-full border border-gray-700">
+            <span className="inline-block w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
+            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider whitespace-nowrap">
+              Control Room Active • 24/7
             </span>
           </div>
-          <p className="text-xs text-gray-500 mt-2 font-mono">
-            © 2026 Smart Disaster Management System Authority.
-          </p>
         </div>
 
-        <div className="flex flex-wrap gap-10 lg:gap-16">
-          {/* Quick Nav */}
-          <div className="flex flex-col gap-2 min-w-[140px]">
-            <h4 className="font-bold text-xs text-gray-100 uppercase tracking-wider mb-1">
-              Public Portal
-            </h4>
-            <button
-              onClick={() => setActiveTab?.('home')}
-              className="text-left text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Home Overview
-            </button>
-            <button
-              onClick={() => setActiveTab?.('kerala-map')}
-              className="text-left text-sm text-gray-400 hover:text-white transition-colors font-semibold flex items-center gap-1 text-[#af101a]"
-            >
-              📍 Kerala Live Relief Map
-            </button>
-            <button
-              onClick={() => setActiveTab?.('active-alerts')}
-              className="text-left text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Active Crisis Alerts
-            </button>
-            <button
-              onClick={() => setActiveTab?.('report-disaster')}
-              className="text-left text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Report Incident / Emergency
-            </button>
-            <button
-              onClick={() => setActiveTab?.('volunteer')}
-              className="text-left text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Volunteer Enrollment
-            </button>
-          </div>
-
-          {/* Legal & Helpline */}
-          <div className="flex flex-col gap-2 min-w-[140px]">
-            <h4 className="font-bold text-xs text-gray-100 uppercase tracking-wider mb-1">
-              Helplines & Legal
-            </h4>
-            <a href="tel:1077" className="text-sm font-bold text-[#10b981] hover:underline">
-              📞 Collectorate: 1077
+        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+          <div className="flex items-center gap-4">
+            <a href="tel:1077" className="text-xs font-bold text-[#10b981] flex items-center gap-1 hover:brightness-110">
+              <span className="material-symbols-outlined text-[16px]">call</span> 1077
             </a>
-            <a href="tel:112" className="text-sm font-bold text-[#ef4444] hover:underline">
-              🚨 Emergency: 112
-            </a>
-            <a href="#privacy" className="text-xs text-gray-400 hover:text-white transition-colors mt-2">
-              Privacy & Data Policy
-            </a>
-            <a href="#terms" className="text-xs text-gray-400 hover:text-white transition-colors">
-              Terms of Emergency Service
+            <a href="tel:112" className="text-xs font-bold text-[#ef4444] flex items-center gap-1 hover:brightness-110">
+              <span className="material-symbols-outlined text-[16px]">emergency</span> 112
             </a>
           </div>
+          <p className="text-[10px] text-gray-500 font-medium">
+            © 2026 SDMS Authority Kerala. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

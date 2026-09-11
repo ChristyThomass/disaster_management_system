@@ -168,8 +168,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-all text-left whitespace-nowrap"
                   title={`Logged in as ${currentUser?.fullName}`}
                 >
-                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0">
-                    {currentUser?.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'}
+                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0 overflow-hidden">
+                    {currentUser?.photoUrl ? (
+                      <img 
+                        src={`${currentUser.photoUrl}${currentUser.photoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`} 
+                        alt={currentUser.fullName} 
+                        className="w-full h-full object-cover" 
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      currentUser?.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'
+                    )}
                   </div>
                   <div className="hidden sm:flex flex-col">
                     <span className="text-xs font-bold text-gray-800 leading-tight truncate max-w-[110px]">

@@ -12,9 +12,10 @@ export const SupabaseSetupModal: React.FC<SupabaseSetupModalProps> = ({ isOpen, 
 
   if (!isOpen) return null;
 
-  const passwordSqlSnippet = `-- 1. Add password columns to your users table
+  const passwordSqlSnippet = `-- 1. Add password & photo columns to your users table
 ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS password TEXT;
 ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS password_hash TEXT;
+ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS photo_url TEXT;
 
 -- 2. Create or update user_profiles table safely
 CREATE TABLE IF NOT EXISTS user_profiles (
@@ -26,11 +27,13 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   district TEXT DEFAULT 'Wayanad',
   password TEXT,
   password_hash TEXT,
+  photo_url TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS password TEXT;
-ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS password_hash TEXT;`;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS password_hash TEXT;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS photo_url TEXT;`;
 
   const handleCopyAllSql = () => {
     navigator.clipboard.writeText(SUPABASE_SQL_SCHEMA);

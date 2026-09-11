@@ -48,6 +48,7 @@ import {
   fetchAlertsFromSupabase,
   fetchInventoryFromSupabase,
   fetchSosAlertsFromSupabase,
+  initSupabaseSchema,
 } from './lib/supabase';
 
 export default function App() {
@@ -110,6 +111,11 @@ export default function App() {
       return null;
     }
   });
+
+  useEffect(() => {
+    // 1. Initialize Supabase Schema (Ensure photo_url column exists)
+    initSupabaseSchema().catch(err => console.warn('Supabase init error:', err));
+  }, []);
 
   // Modal states
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);

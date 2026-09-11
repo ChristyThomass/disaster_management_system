@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { UserProfile } from '../types';
+import { uploadMediaToSupabase, compressImageToDataUrl, saveUserProfileToSupabase } from '../lib/supabase';
 
 interface ProfileSettingsModalProps {
   isOpen: boolean;
@@ -35,8 +36,65 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   // Local state for settings
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [smsAlertsEnabled, setSmsAlertsEnabled] = useState(true);
+  
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !currentUser) return;
+
+    try {
+      setIsUploading(true);
+      // 1. Compress image
+      const compressedDataUrl = await compressImageToDataUrl(file, 400, 0.8);
+      
+      // 2. Upload to Supabase
+      const { url, error } = await uploadMediaToSupabase(compressedDataUrl, 'images', `profile_${currentUser.id}_${Date.now()}`);
+      
+      if (error) throw new Error(error);
+      if (!url) throw new Error('Failed to get upload URL');
+
+      // 3. Update profile with new photo URL
+      const updatedProfile: UserProfile = {
+        ...currentUser,
+        photoUrl: url
+      };
+
+      // 4. Save to database
+      const dbResult = await saveUserProfileToSupabase(updatedProfile);
+      if (!dbResult.success) throw new Error(dbResult.error || 'Failed to save to database');
+
+      // 5. Update local state
+      onUpdateProfile(updatedProfile);
+      alert('Photo updated successfully!');
+    } catch (err) {
+      console.error('Photo Upload Error:', err);
+      alert('Failed to upload photo. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const updatedProfile: UserProfile = {
+        ...currentUser,
+        photoUrl: undefined
+      };
+      
+      const dbResult = await saveUserProfileToSupabase(updatedProfile);
+      if (!dbResult.success) throw new Error(dbResult.error || 'Failed to update profile');
+      
+      onUpdateProfile(updatedProfile);
+    } catch (err) {
+      console.error('Remove Photo Error:', err);
+    }
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,11 +228,37 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
 
           {activeTab === 'photo' && (
             <div className="flex flex-col items-center py-6 space-y-6">
+              <input 
+                type="file"
+                ref={fileInputRef}
+                onChange={handlePhotoUpload}
+                accept="image/*"
+                className="hidden"
+              />
               <div className="relative">
-                <div className="w-32 h-32 rounded-full bg-[#af101a] text-white font-bold text-4xl flex items-center justify-center shadow-lg border-4 border-white outline outline-1 outline-gray-200">
-                  {currentUser?.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'}
+                <div className="w-32 h-32 rounded-full bg-[#af101a] text-white font-bold text-4xl flex items-center justify-center shadow-lg border-4 border-white outline outline-1 outline-gray-200 overflow-hidden">
+                  {currentUser?.photoUrl ? (
+                    <img 
+                      src={`${currentUser.photoUrl}${currentUser.photoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`} 
+                      alt={currentUser.fullName} 
+                      className="w-full h-full object-cover" 
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    currentUser?.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'
+                  )}
                 </div>
-                <button className="absolute bottom-0 right-0 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 text-gray-700 transition-colors" title="Upload new photo">
+                {isUploading && (
+                  <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center z-10">
+                    <span className="material-symbols-outlined text-white animate-spin text-3xl">sync</span>
+                  </div>
+                )}
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="absolute bottom-0 right-0 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 text-gray-700 transition-colors disabled:opacity-50" 
+                  title="Upload new photo"
+                >
                   <span className="material-symbols-outlined text-[20px]">add_a_photo</span>
                 </button>
               </div>
@@ -187,14 +271,23 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
               </div>
 
               <div className="flex gap-3">
-                <button className="px-4 py-2 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-2">
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="px-4 py-2 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-2 disabled:opacity-50"
+                >
                   <span className="material-symbols-outlined text-[18px]">upload</span>
-                  Upload
+                  {isUploading ? 'Uploading...' : 'Upload'}
                 </button>
-                <button className="px-4 py-2 text-sm font-semibold border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">delete</span>
-                  Remove
-                </button>
+                {currentUser?.photoUrl && (
+                  <button 
+                    onClick={handleRemovePhoto}
+                    className="px-4 py-2 text-sm font-semibold border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">delete</span>
+                    Remove
+                  </button>
+                )}
               </div>
             </div>
           )}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AlertItem, KERALA_DISTRICTS } from '../types';
+import { WeatherWidget } from '../components/WeatherWidget';
 
 interface ActiveAlertsViewProps {
   alerts: AlertItem[];
@@ -133,6 +134,9 @@ export const ActiveAlertsView: React.FC<ActiveAlertsViewProps> = ({
           )}
         </div>
       </div>
+
+      {/* REAL-TIME WEATHER SYSTEM */}
+      <WeatherWidget />
 
       {/* FILTER CONTROL TOOLBAR */}
       <div className="bg-white p-4 rounded-xl border border-[#e4beba] shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">

@@ -403,8 +403,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {currentUser && (
           <div className="bg-[#ffdad6]/40 border border-[#e4beba] rounded-xl p-3 mb-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
-                {currentUser?.fullName?.charAt(0).toUpperCase()}
+              <div className="w-8 h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
+                {currentUser?.photoUrl ? (
+                  <img 
+                    src={`${currentUser.photoUrl}${currentUser.photoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`} 
+                    alt={currentUser.fullName} 
+                    className="w-full h-full object-cover" 
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  currentUser?.fullName?.charAt(0).toUpperCase()
+                )}
               </div>
               <div className="truncate">
                 <div className="flex items-center gap-1.5">

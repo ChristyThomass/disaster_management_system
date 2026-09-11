@@ -576,6 +576,13 @@ export async function fetchInventoryFromSupabase(): Promise<InventoryItem[] | nu
 }
 
 // -------------------------------------------------------------
+// SCHEMA INITIALIZATION (Placeholder for client-side)
+// -------------------------------------------------------------
+export async function initSupabaseSchema(): Promise<{ success: boolean }> {
+  return { success: true };
+}
+
+// -------------------------------------------------------------
 // USER PROFILES & SIGN UP ACCOUNTS (USERS TABLE & PASSWORD VERIFICATION)
 // -------------------------------------------------------------
 export async function saveUserProfileToSupabase(
@@ -590,6 +597,7 @@ export async function saveUserProfileToSupabase(
       phone: user.phone || '',
       role: user.role || 'Civilian',
       district: user.district || 'Wayanad',
+      photo_url: user.photoUrl || '',
       created_at: user.createdAt || new Date().toISOString(),
     };
 
@@ -698,6 +706,7 @@ export async function verifyUserCredentialsInSupabase(
         phone: matchedRow.phone,
         role: matchedRow.role || 'Civilian',
         district: matchedRow.district || 'Wayanad',
+        photoUrl: matchedRow.photo_url,
         createdAt: matchedRow.created_at,
       };
 
@@ -772,6 +781,7 @@ export async function fetchUserProfilesFromSupabase(): Promise<UserProfile[] | n
       phone: row.phone,
       role: row.role,
       district: row.district,
+      photoUrl: row.photo_url,
       createdAt: row.created_at,
     }));
   } catch {
@@ -988,14 +998,17 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   district TEXT DEFAULT 'Wayanad',
   password TEXT,
   password_hash TEXT,
+  photo_url TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Ensure password columns exist if table was already created
+-- Ensure columns exist if table was already created
 ALTER TABLE users ADD COLUMN IF NOT EXISTS password TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS photo_url TEXT;
 ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS password TEXT;
 ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS password_hash TEXT;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS photo_url TEXT;
 
 -- 5. CITIZEN HELP REQUESTS TABLE
 CREATE TABLE IF NOT EXISTS help_requests (

@@ -164,6 +164,7 @@ export interface UserProfile {
   role: 'Civilian' | 'Volunteer' | 'Relief Personnel' | 'Administrator';
   district?: string;
   phone?: string;
+  photoUrl?: string;
   createdAt?: string;
 }
 
