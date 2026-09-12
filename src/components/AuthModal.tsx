@@ -38,7 +38,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [signUpPassword, setSignUpPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [role, setRole] = useState<'Civilian' | 'Volunteer'>('Civilian');
   const [district, setDistrict] = useState('Wayanad');
 
   // UI status state
@@ -274,7 +273,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         options: {
           data: {
             full_name: fullName,
-            role,
+            role: 'Civilian',
             district,
             phone,
           },
@@ -286,7 +285,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         id: data?.user?.id || `usr-${Date.now()}`,
         email: signUpEmail,
         fullName: fullName || 'New Member',
-        role,
+        role: 'Civilian',
         district,
         phone,
         createdAt: new Date().toISOString(),
@@ -294,20 +293,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
       // Upsert profile along with password into Supabase tables
       await saveUserProfileToSupabase(newProfile, signUpPassword);
-
-      // Also upsert profile to Supabase volunteers table if role is Volunteer
-      if (role === 'Volunteer') {
-        await supabase.from('volunteers').upsert({
-          id: newProfile.id,
-          name: fullName,
-          role: 'Community Volunteer',
-          location: `${district} Sector`,
-          status: 'Active Field',
-          skills: ['First Aid', 'Emergency Dispatch'],
-          contact: phone || signUpEmail,
-          created_at: new Date().toISOString(),
-        });
-      }
 
       setCurrentUser(newProfile);
       localStorage.setItem('resilience_user', JSON.stringify(newProfile));
@@ -403,17 +388,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {currentUser && (
           <div className="bg-[#ffdad6]/40 border border-[#e4beba] rounded-xl p-3 mb-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                {currentUser?.photoUrl ? (
-                  <img 
-                    src={`${currentUser.photoUrl}${currentUser.photoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`} 
-                    alt={currentUser.fullName} 
-                    className="w-full h-full object-cover" 
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  currentUser?.fullName?.charAt(0).toUpperCase()
-                )}
+              <div className="w-8 h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                {currentUser?.fullName?.charAt(0).toUpperCase()}
               </div>
               <div className="truncate">
                 <div className="flex items-center gap-1.5">
@@ -524,10 +500,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1a1c1c] mb-1">
-                      Phone Number (Optional)
+                      Phone Number *
                     </label>
                     <input
                       type="tel"
+                      required
                       placeholder="Enter phone number"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
@@ -536,47 +513,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1a1c1c] mb-1">
-                      User Account Role *
-                    </label>
-                    <select
-                      value={role}
-                      onChange={(e) => setRole(e.target.value as any)}
-                      className="w-full bg-[#f9f9f9] border border-[#e2e2e2] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#af101a]/20 outline-none font-medium"
-                    >
-                      <option value="Civilian">General User</option>
-                      <option value="Volunteer">Volunteer</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1a1c1c] mb-1">
-                      District / Region *
-                    </label>
-                    <select
-                      value={district}
-                      onChange={(e) => setDistrict(e.target.value)}
-                      className="w-full bg-[#f9f9f9] border border-[#e2e2e2] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#af101a]/20 outline-none font-medium text-[#1a1c1c]"
-                    >
-                      <option value="Wayanad">Wayanad Sector</option>
-                      <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                      <option value="Kollam">Kollam</option>
-                      <option value="Pathanamthitta">Pathanamthitta</option>
-                      <option value="Alappuzha">Alappuzha</option>
-                      <option value="Kottayam">Kottayam</option>
-                      <option value="Idukki">Idukki (High-Range)</option>
-                      <option value="Ernakulam">Ernakulam</option>
-                      <option value="Thrissur">Thrissur</option>
-                      <option value="Palakkad">Palakkad</option>
-                      <option value="Malappuram">Malappuram</option>
-                      <option value="Kozhikode">Kozhikode</option>
-                      <option value="Kannur">Kannur</option>
-                      <option value="Kasaragod">Kasaragod</option>
-                      <option value="Other">Other Region / Outside Kerala</option>
-                    </select>
-                  </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#1a1c1c] mb-1">
+                    District / Region *
+                  </label>
+                  <select
+                    value={district}
+                    onChange={(e) => setDistrict(e.target.value)}
+                    className="w-full bg-[#f9f9f9] border border-[#e2e2e2] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#af101a]/20 outline-none font-medium text-[#1a1c1c]"
+                  >
+                    <option value="Wayanad">Wayanad Sector</option>
+                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                    <option value="Kollam">Kollam</option>
+                    <option value="Pathanamthitta">Pathanamthitta</option>
+                    <option value="Alappuzha">Alappuzha</option>
+                    <option value="Kottayam">Kottayam</option>
+                    <option value="Idukki">Idukki (High-Range)</option>
+                    <option value="Ernakulam">Ernakulam</option>
+                    <option value="Thrissur">Thrissur</option>
+                    <option value="Palakkad">Palakkad</option>
+                    <option value="Malappuram">Malappuram</option>
+                    <option value="Kozhikode">Kozhikode</option>
+                    <option value="Kannur">Kannur</option>
+                    <option value="Kasaragod">Kasaragod</option>
+                    <option value="Other">Other Region / Outside Kerala</option>
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

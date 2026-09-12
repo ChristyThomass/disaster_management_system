@@ -36,8 +36,7 @@ export const PublicHome: React.FC<PublicHomeProps> = ({
           </div>
 
           <h1 className="text-3xl md:text-5xl lg:text-[48px] font-extrabold text-[#1a1c1c] leading-tight tracking-tight">
-            Rapid Response.<br />
-            Resilient Communities.
+            Rapid Response.<br />Resilient Communities.
           </h1>
 
           <p className="text-base md:text-lg text-[#5b403d] max-w-md">
@@ -117,14 +116,16 @@ export const PublicHome: React.FC<PublicHomeProps> = ({
           <p className="text-xs font-semibold text-[#5b403d] uppercase tracking-wider">Active Alerts</p>
         </div>
 
-        <div className="bg-white border border-[#e4beba] p-6 rounded-xl shadow-sm flex flex-col gap-2 border-t-4 border-t-[#4c56af]">
-          <div className="flex justify-between items-start">
-            <span className="material-symbols-outlined text-[#4c56af] text-[32px]">group</span>
-            <span className="bg-[#959efd]/30 text-[#27308a] text-xs px-2 py-1 rounded font-semibold">Last 24h</span>
+        {currentUser && (
+          <div className="bg-white border border-[#e4beba] p-6 rounded-xl shadow-sm flex flex-col gap-2 border-t-4 border-t-[#4c56af]">
+            <div className="flex justify-between items-start">
+              <span className="material-symbols-outlined text-[#4c56af] text-[32px]">group</span>
+              <span className="bg-[#959efd]/30 text-[#27308a] text-xs px-2 py-1 rounded font-semibold">Last 24h</span>
+            </div>
+            <h3 className="text-3xl md:text-4xl font-bold text-[#1a1c1c] mt-2">1,248</h3>
+            <p className="text-xs font-semibold text-[#5b403d] uppercase tracking-wider">Volunteers Mobilized</p>
           </div>
-          <h3 className="text-3xl md:text-4xl font-bold text-[#1a1c1c] mt-2">1,248</h3>
-          <p className="text-xs font-semibold text-[#5b403d] uppercase tracking-wider">Volunteers Mobilized</p>
-        </div>
+        )}
 
         <div className="bg-white border border-[#e4beba] p-6 rounded-xl shadow-sm flex flex-col gap-2 border-t-4 border-t-[#005f7b]">
           <div className="flex justify-between items-start">
@@ -133,6 +134,36 @@ export const PublicHome: React.FC<PublicHomeProps> = ({
           </div>
           <h3 className="text-3xl md:text-4xl font-bold text-[#1a1c1c] mt-2">8.5k</h3>
           <p className="text-xs font-semibold text-[#5b403d] uppercase tracking-wider">Resources Distributed</p>
+        </div>
+      </section>
+
+      {/* Volunteering Information Section */}
+      <section className="bg-[#f0f4f8] rounded-xl border border-[#d1d9e0] p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center shadow-sm">
+        <div className="w-16 h-16 rounded-full bg-[#4c56af] text-white flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-[32px]">volunteer_activism</span>
+        </div>
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-[#1a1c1c] mb-2">Join the Volunteer Network</h3>
+          <p className="text-sm text-[#5b403d] leading-relaxed">
+            Our community depends on the selfless contribution of volunteers like you. Whether it's field rescue, logistics coordination, or remote data entry, your skills can save lives.
+          </p>
+        </div>
+        <div className="shrink-0 w-full md:w-auto">
+          <button
+            onClick={() => {
+              if (currentUser) {
+                setActiveTab('volunteer');
+              } else if (onOpenLoginModal) {
+                onOpenLoginModal();
+              } else {
+                setActiveTab('volunteer');
+              }
+            }}
+            className="w-full md:w-auto bg-[#4c56af] hover:bg-[#27308a] text-white px-6 py-3 rounded-lg font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[20px]">person_add</span>
+            Register Volunteer
+          </button>
         </div>
       </section>
     </main>

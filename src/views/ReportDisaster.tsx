@@ -15,6 +15,7 @@ export const ReportDisaster: React.FC<ReportDisasterProps> = ({
   currentUser,
   onOpenLoginModal,
 }) => {
+
   const [disasterType, setDisasterType] = useState('');
   const [severity, setSeverity] = useState<'Low' | 'Medium' | 'High' | 'Critical'>('High');
   const [location, setLocation] = useState(() => (currentUser?.district ? `${currentUser.district}, Kerala` : ''));
@@ -285,7 +286,7 @@ export const ReportDisaster: React.FC<ReportDisasterProps> = ({
             Report a Disaster Incident
           </h1>
           <p className="text-base text-[#5b403d]">
-            Submit field observations, emergency coordinates, and visual media evidence directly to state dispatchers.
+            Submit real-time disaster evidence, photo clips, and emergency details directly to state control rooms.
           </p>
         </div>
 

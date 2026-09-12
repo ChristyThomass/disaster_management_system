@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { AlertItem, KERALA_DISTRICTS } from '../types';
+import { AlertItem, KERALA_DISTRICTS, UserProfile } from '../types';
 import { WeatherWidget } from '../components/WeatherWidget';
 
 interface ActiveAlertsViewProps {
   alerts: AlertItem[];
   onOpenIssueAlertModal?: () => void;
   isAdmin?: boolean;
+  currentUser?: UserProfile | null;
 }
 
 export const ActiveAlertsView: React.FC<ActiveAlertsViewProps> = ({
   alerts,
   onOpenIssueAlertModal,
   isAdmin = false,
+  currentUser = null,
 }) => {
   const [severityFilter, setSeverityFilter] = useState<string>('All');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('All');
@@ -136,7 +138,7 @@ export const ActiveAlertsView: React.FC<ActiveAlertsViewProps> = ({
       </div>
 
       {/* REAL-TIME WEATHER SYSTEM */}
-      <WeatherWidget />
+      <WeatherWidget currentUser={currentUser} />
 
       {/* FILTER CONTROL TOOLBAR */}
       <div className="bg-white p-4 rounded-xl border border-[#e4beba] shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
@@ -144,6 +146,9 @@ export const ActiveAlertsView: React.FC<ActiveAlertsViewProps> = ({
         <div className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-0.5">
           {['All', 'Code Red', 'Warning', 'Info'].map((sev) => {
             const isActive = severityFilter === sev;
+            const label = sev === 'All' ? 'All Severities' : 
+                          sev === 'Code Red' ? 'Code Red' :
+                          sev === 'Warning' ? 'Warning' : 'Info';
             return (
               <button
                 key={sev}
@@ -154,7 +159,7 @@ export const ActiveAlertsView: React.FC<ActiveAlertsViewProps> = ({
                     : 'bg-gray-100 text-[#5b403d] hover:bg-gray-200 border border-gray-200'
                 }`}
               >
-                {sev === 'All' ? 'All Severities' : sev}
+                {label}
               </button>
             );
           })}
@@ -326,7 +331,7 @@ export const ActiveAlertsView: React.FC<ActiveAlertsViewProps> = ({
           </a>
           <a
             href="tel:1070"
-            className="bg-[#005f7b] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs"
+            className="bg-[#005f7b] text-[#ffffff] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs"
           >
             <span>State SDMA Control:</span> <strong>1070</strong>
           </a>
@@ -341,4 +346,3 @@ export const ActiveAlertsView: React.FC<ActiveAlertsViewProps> = ({
     </main>
   );
 };
-

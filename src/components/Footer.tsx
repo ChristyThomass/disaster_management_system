@@ -8,9 +8,12 @@ interface FooterProps {
   currentUser?: UserProfile | null;
 }
 
-export const Footer: React.FC<FooterProps> = ({ activeTab, setActiveTab, onOpenLoginModal, currentUser }) => {
-  const isAdmin = currentUser?.role === 'Administrator' || currentUser?.role === 'Admin' || currentUser?.role === 'System Administrator';
-
+export const Footer: React.FC<FooterProps> = ({ 
+  activeTab, 
+  setActiveTab, 
+  onOpenLoginModal, 
+  currentUser,
+}) => {
   return (
     <footer className="bg-[#1c1d1f] text-gray-400 w-full mt-auto border-t-2 border-[#af101a]">
       <div className="w-full py-6 px-6 max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
@@ -46,4 +49,3 @@ export const Footer: React.FC<FooterProps> = ({ activeTab, setActiveTab, onOpenL
     </footer>
   );
 };
-

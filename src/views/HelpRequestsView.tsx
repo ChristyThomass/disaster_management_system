@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { HelpRequest } from '../types';
+import { HelpRequest, UserProfile } from '../types';
 
 interface HelpRequestsViewProps {
   helpRequests: HelpRequest[];
+  currentUser?: UserProfile | null;
 }
 
-export const HelpRequestsView: React.FC<HelpRequestsViewProps> = ({ helpRequests: initial }) => {
+export const HelpRequestsView: React.FC<HelpRequestsViewProps> = ({ 
+  helpRequests: initial,
+  currentUser,
+}) => {
   const [requests, setRequests] = useState(initial);
 
   const handleFulfill = (id: string) => {
@@ -19,16 +23,16 @@ export const HelpRequestsView: React.FC<HelpRequestsViewProps> = ({ helpRequests
       <div className="bg-white p-6 rounded-xl border border-[#e4beba] shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1a1c1c] tracking-tight">
-            Community Help Requests & Assistance
+            Emergency Citizen Help Requests
           </h1>
           <p className="text-sm text-[#5b403d] mt-1">
-            Urgent civilian requests for food, water, medical supplies, and emergency transport.
+            Urgent requests from affected citizens requiring immediate rescue, food, or medical assistance.
           </p>
         </div>
 
         <div className="bg-[#ffdad6] text-[#93000a] px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
           <span className="material-symbols-outlined text-[20px]">handshake</span>
-          38 Pending Requests
+          {requests.filter(r => r.status !== 'Fulfilled').length} Pending Requests
         </div>
       </div>
 
@@ -69,7 +73,11 @@ export const HelpRequestsView: React.FC<HelpRequestsViewProps> = ({ helpRequests
                     : 'bg-[#ffdad6] text-[#93000a]'
                 }`}
               >
-                {req.status}
+                {req.status === 'Fulfilled'
+                  ? 'Fulfilled'
+                  : req.status === 'Assigned'
+                  ? 'Assigned'
+                  : 'Pending'}
               </span>
 
               {req.status !== 'Fulfilled' && (

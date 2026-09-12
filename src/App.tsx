@@ -48,7 +48,6 @@ import {
   fetchAlertsFromSupabase,
   fetchInventoryFromSupabase,
   fetchSosAlertsFromSupabase,
-  initSupabaseSchema,
 } from './lib/supabase';
 
 export default function App() {
@@ -63,7 +62,6 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge with initial defaults ensuring any default report with images isn't missing
           const map = new Map<string, DisasterReport>();
           INITIAL_DISASTER_REPORTS.forEach((r) => map.set(r.id, r));
           parsed.forEach((r: DisasterReport) => {
@@ -111,11 +109,6 @@ export default function App() {
       return null;
     }
   });
-
-  useEffect(() => {
-    // 1. Initialize Supabase Schema (Ensure photo_url column exists)
-    initSupabaseSchema().catch(err => console.warn('Supabase init error:', err));
-  }, []);
 
   // Modal states
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
@@ -321,6 +314,12 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    if (activeTab === 'volunteer' && !currentUser) {
+      setActiveTab('home');
+    }
+  }, [activeTab, currentUser]);
+
   const isAdminView = activeTab.startsWith('admin-');
 
   const triggerGlobalSos = () => {
@@ -333,7 +332,6 @@ export default function App() {
       sosBtn.click();
     }
   };
-
 
   return (
     <div className="min-h-screen bg-[#f9f9f9] text-[#1a1c1c] font-sans flex flex-col selection:bg-[#ffdad6] selection:text-[#93000a]">
@@ -381,7 +379,12 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'active-alerts' && <ActiveAlertsView alerts={alerts} />}
+        {activeTab === 'active-alerts' && (
+          <ActiveAlertsView
+            alerts={alerts}
+            currentUser={currentUser}
+          />
+        )}
 
         {activeTab === 'kerala-map' && (
           <KeralaMapView
@@ -389,6 +392,7 @@ export default function App() {
             onOpenAddModal={() => setIsAddKeralaCampModalOpen(true)}
             onRequestHelpForCamp={() => setIsEmergencyModalOpen(true)}
             sosAlerts={sosAlerts}
+            currentUser={currentUser}
           />
         )}
 
@@ -401,7 +405,12 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'volunteer' && <VolunteersView volunteers={volunteers} />}
+        {activeTab === 'volunteer' && (
+          <VolunteersView
+            volunteers={volunteers}
+            currentUser={currentUser}
+          />
+        )}
 
         {/* ADMIN VIEWS */}
         {activeTab === 'admin-dashboard' && (
@@ -432,6 +441,7 @@ export default function App() {
             onRequestHelpForCamp={() => setIsEmergencyModalOpen(true)}
             isAdmin={true}
             sosAlerts={sosAlerts}
+            currentUser={currentUser}
           />
         )}
 
@@ -454,8 +464,12 @@ export default function App() {
           <div className="p-6 max-w-[1440px] mx-auto w-full">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-[#1a1c1c]">Disaster Incident Reports</h1>
-                <p className="text-xs text-[#5b403d]">Control Room Queue, AI YOLO Damage Verification & Response Dispatch</p>
+                <h1 className="text-2xl font-bold text-[#1a1c1c]">
+                  Disaster Incident Reports
+                </h1>
+                <p className="text-xs text-[#5b403d]">
+                  Control Room Queue, AI YOLO Damage Verification & Response Dispatch
+                </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <button
@@ -567,15 +581,27 @@ export default function App() {
           </div>
         )}
 
-        {activeTab === 'admin-help-requests' && <HelpRequestsView helpRequests={helpRequests} />}
+        {activeTab === 'admin-help-requests' && (
+          <HelpRequestsView 
+            helpRequests={helpRequests} 
+            currentUser={currentUser} 
+          />
+        )}
 
-        {activeTab === 'admin-volunteers' && <VolunteersView volunteers={volunteers} />}
+        {activeTab === 'admin-volunteers' && (
+          <VolunteersView 
+            volunteers={volunteers} 
+            isAdmin={true} 
+            currentUser={currentUser} 
+          />
+        )}
 
         {activeTab === 'admin-alerts' && (
           <ActiveAlertsView
             alerts={alerts}
             onOpenIssueAlertModal={() => setIsIssueAlertModalOpen(true)}
             isAdmin={true}
+            currentUser={currentUser}
           />
         )}
 
@@ -583,7 +609,9 @@ export default function App() {
           <div className="p-8 max-w-xl mx-auto w-full">
             <div className="bg-white p-6 rounded-xl border border-[#e4beba] shadow-xs space-y-4">
               <h2 className="text-xl font-bold">
-                {activeTab === 'admin-analytics' ? 'Regional Analytics & Intelligence' : 'Command System Settings'}
+                {activeTab === 'admin-analytics' 
+                  ? 'Regional Analytics & Intelligence'
+                  : 'Command System Settings'}
               </h2>
               <p className="text-sm text-[#5b403d]">
                 {activeTab === 'admin-analytics'
@@ -614,7 +642,9 @@ export default function App() {
           initialTab={profileSettingsInitialTab}
           onUpdateProfile={(updatedUser) => {
             setCurrentUser(updatedUser);
-            localStorage.setItem('resilience_user', JSON.stringify(updatedUser));
+            try {
+              localStorage.setItem('resilience_user', JSON.stringify(updatedUser));
+            } catch {}
           }}
         />
       )}

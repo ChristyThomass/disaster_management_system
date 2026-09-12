@@ -53,7 +53,8 @@ export const SosButton: React.FC<SosButtonProps> = ({
       // Fast reverse geocode with a tight timeout to prevent blocking
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16`, {
+      const lang = currentUser?.language || 'en';
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16&accept-language=${lang}`, {
         signal: controller.signal
       });
       clearTimeout(timeoutId);

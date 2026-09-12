@@ -581,7 +581,8 @@ export const INITIAL_VOLUNTEERS: Volunteer[] = [
     location: 'Riverside Sector',
     status: 'Active Field',
     skills: ['Emergency Triage', 'Surgical Prep', 'HAM Radio'],
-    contact: 'athorne@resilience.org'
+    contact: '+91 98470 12345',
+    email: 'aris.thorne@keralarescue.org'
   },
   {
     id: 'vol-2',
@@ -590,7 +591,8 @@ export const INITIAL_VOLUNTEERS: Volunteer[] = [
     location: 'Central Warehouse',
     status: 'Active Field',
     skills: ['Forklift Certified', 'Inventory Management', 'Bilingual'],
-    contact: 'erostova@resilience.org'
+    contact: '+91 98470 54321',
+    email: 'elena.rostova@keralarescue.org'
   },
   {
     id: 'vol-3',
@@ -599,7 +601,8 @@ export const INITIAL_VOLUNTEERS: Volunteer[] = [
     location: 'District 4 Station',
     status: 'On Call',
     skills: ['Swiftwater Rescue', 'Boat Operator', 'CPR Instructor'],
-    contact: 'mvance@resilience.org'
+    contact: '+91 98470 67890',
+    email: 'marcus.vance@keralarescue.org'
   },
   {
     id: 'vol-4',
@@ -608,7 +611,8 @@ export const INITIAL_VOLUNTEERS: Volunteer[] = [
     location: 'Admin Command',
     status: 'Active Field',
     skills: ['GIS Mapping', 'Public Broadcasting', 'Data Entry'],
-    contact: 'psharma@resilience.org'
+    contact: '+91 98470 11223',
+    email: 'priya.sharma@keralarescue.org'
   }
 ];
 

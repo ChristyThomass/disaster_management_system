@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ReliefLocation, SosAlert } from '../types';
+import { ReliefLocation, SosAlert, UserProfile } from '../types';
 import { KeralaMapComponent } from '../components/KeralaMapComponent';
 
 interface KeralaMapViewProps {
@@ -8,6 +8,7 @@ interface KeralaMapViewProps {
   onRequestHelpForCamp?: (location: ReliefLocation) => void;
   isAdmin?: boolean;
   sosAlerts?: SosAlert[];
+  currentUser?: UserProfile | null;
 }
 
 const KERALA_DISTRICTS = [
@@ -41,13 +42,12 @@ export const KeralaMapView: React.FC<KeralaMapViewProps> = ({
   onRequestHelpForCamp,
   isAdmin = false,
   sosAlerts = [],
+  currentUser = null,
 }) => {
   const [selectedDistrict, setSelectedDistrict] = useState('All Districts');
   const [selectedType, setSelectedType] = useState('All Types');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState<ReliefLocation | null>(
-    locations[0] || null
-  );
+  const [selectedLocation, setSelectedLocation] = useState<ReliefLocation | null>(null);
 
   // Quick coordinate focus presets for Kerala districts
   const districtCoords: Record<string, [number, number]> = {
@@ -124,15 +124,17 @@ export const KeralaMapView: React.FC<KeralaMapViewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            onClick={onOpenAddModal}
-            className="w-full sm:w-auto bg-[#af101a] hover:bg-[#d32f2f] text-white px-5 py-2.5 rounded-lg text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all"
-          >
-            <span className="material-symbols-outlined text-[20px]">add_location_alt</span>
-            + Register New Camp / Shelter
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <button
+              onClick={onOpenAddModal}
+              className="w-full sm:w-auto bg-[#af101a] hover:bg-[#d32f2f] text-white px-5 py-2.5 rounded-lg text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all"
+            >
+              <span className="material-symbols-outlined text-[20px]">add_location_alt</span>
+              + Register New Camp / Shelter
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Kerala Emergency Stats Bar */}
@@ -219,6 +221,7 @@ export const KeralaMapView: React.FC<KeralaMapViewProps> = ({
               sosAlerts={sosAlerts}
               center={currentCenter}
               zoom={currentZoom}
+              currentUser={currentUser}
             />
           </div>
 

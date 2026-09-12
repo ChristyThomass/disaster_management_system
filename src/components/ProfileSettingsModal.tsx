@@ -1,13 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { UserProfile } from '../types';
-import { uploadMediaToSupabase, compressImageToDataUrl, saveUserProfileToSupabase } from '../lib/supabase';
 
 interface ProfileSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentUser: UserProfile;
   onUpdateProfile: (updatedProfile: UserProfile) => void;
-  initialTab?: 'edit-profile' | 'photo' | 'settings';
+  initialTab?: 'edit-profile' | 'settings';
 }
 
 export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
@@ -15,9 +14,9 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   onClose,
   currentUser,
   onUpdateProfile,
-  initialTab = 'edit-profile'
+  initialTab = 'edit-profile',
 }) => {
-  const [activeTab, setActiveTab] = useState<'edit-profile' | 'photo' | 'settings'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'edit-profile' | 'settings'>(initialTab);
   
   // Local state for editing profile
   const [fullName, setFullName] = useState(currentUser?.fullName || '');
@@ -36,65 +35,8 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   // Local state for settings
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [smsAlertsEnabled, setSmsAlertsEnabled] = useState(true);
-  
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
-
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !currentUser) return;
-
-    try {
-      setIsUploading(true);
-      // 1. Compress image
-      const compressedDataUrl = await compressImageToDataUrl(file, 400, 0.8);
-      
-      // 2. Upload to Supabase
-      const { url, error } = await uploadMediaToSupabase(compressedDataUrl, 'images', `profile_${currentUser.id}_${Date.now()}`);
-      
-      if (error) throw new Error(error);
-      if (!url) throw new Error('Failed to get upload URL');
-
-      // 3. Update profile with new photo URL
-      const updatedProfile: UserProfile = {
-        ...currentUser,
-        photoUrl: url
-      };
-
-      // 4. Save to database
-      const dbResult = await saveUserProfileToSupabase(updatedProfile);
-      if (!dbResult.success) throw new Error(dbResult.error || 'Failed to save to database');
-
-      // 5. Update local state
-      onUpdateProfile(updatedProfile);
-      alert('Photo updated successfully!');
-    } catch (err) {
-      console.error('Photo Upload Error:', err);
-      alert('Failed to upload photo. Please try again.');
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleRemovePhoto = async () => {
-    if (!currentUser) return;
-    
-    try {
-      const updatedProfile: UserProfile = {
-        ...currentUser,
-        photoUrl: undefined
-      };
-      
-      const dbResult = await saveUserProfileToSupabase(updatedProfile);
-      if (!dbResult.success) throw new Error(dbResult.error || 'Failed to update profile');
-      
-      onUpdateProfile(updatedProfile);
-    } catch (err) {
-      console.error('Remove Photo Error:', err);
-    }
-  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,15 +73,6 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
           >
             <span className="material-symbols-outlined text-[18px]">person</span>
             Profile
-          </button>
-          <button
-            onClick={() => setActiveTab('photo')}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors flex justify-center items-center gap-2 ${
-              activeTab === 'photo' ? 'text-[#af101a] border-b-2 border-[#af101a]' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[18px]">photo_camera</span>
-            Photo
           </button>
           <button
             onClick={() => setActiveTab('settings')}
@@ -180,9 +113,10 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number *</label>
                   <input
                     type="tel"
+                    required
                     className="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-[#af101a] focus:border-transparent outline-none"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -190,8 +124,9 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">District</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">District *</label>
                   <select
+                    required
                     className="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-[#af101a] focus:border-transparent outline-none bg-white"
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
@@ -226,72 +161,6 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
             </form>
           )}
 
-          {activeTab === 'photo' && (
-            <div className="flex flex-col items-center py-6 space-y-6">
-              <input 
-                type="file"
-                ref={fileInputRef}
-                onChange={handlePhotoUpload}
-                accept="image/*"
-                className="hidden"
-              />
-              <div className="relative">
-                <div className="w-32 h-32 rounded-full bg-[#af101a] text-white font-bold text-4xl flex items-center justify-center shadow-lg border-4 border-white outline outline-1 outline-gray-200 overflow-hidden">
-                  {currentUser?.photoUrl ? (
-                    <img 
-                      src={`${currentUser.photoUrl}${currentUser.photoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`} 
-                      alt={currentUser.fullName} 
-                      className="w-full h-full object-cover" 
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    currentUser?.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'
-                  )}
-                </div>
-                {isUploading && (
-                  <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center z-10">
-                    <span className="material-symbols-outlined text-white animate-spin text-3xl">sync</span>
-                  </div>
-                )}
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploading}
-                  className="absolute bottom-0 right-0 bg-white border border-gray-300 rounded-full p-2 shadow-sm hover:bg-gray-50 text-gray-700 transition-colors disabled:opacity-50" 
-                  title="Upload new photo"
-                >
-                  <span className="material-symbols-outlined text-[20px]">add_a_photo</span>
-                </button>
-              </div>
-              
-              <div className="text-center space-y-1">
-                <h3 className="font-bold text-gray-900">Profile Photo</h3>
-                <p className="text-xs text-gray-500 max-w-xs">
-                  Upload a clear, front-facing photo to help responders and volunteers identify you in the field.
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploading}
-                  className="px-4 py-2 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 flex items-center gap-2 disabled:opacity-50"
-                >
-                  <span className="material-symbols-outlined text-[18px]">upload</span>
-                  {isUploading ? 'Uploading...' : 'Upload'}
-                </button>
-                {currentUser?.photoUrl && (
-                  <button 
-                    onClick={handleRemovePhoto}
-                    className="px-4 py-2 text-sm font-semibold border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">delete</span>
-                    Remove
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
           {activeTab === 'settings' && (
             <div className="space-y-6">
               <div>
@@ -321,7 +190,9 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
               </div>
 
               <div>
-                <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider border-b pb-1 mt-6">Account Security</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider border-b pb-1 mt-6">
+                  Account Security
+                </h3>
                 <button className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                   <span className="material-symbols-outlined text-[18px]">password</span>
                   Change Password

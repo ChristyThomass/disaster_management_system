@@ -43,7 +43,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="bg-[#af101a] text-white py-1 px-4 md:px-6 border-b border-[#d32f2f] relative overflow-hidden h-10 flex items-center">
         <div className="flex items-center space-x-2 font-semibold shrink-0 mr-4 z-10 bg-[#af101a] h-full pr-4 shadow-[4px_0_8px_rgba(175,16,26,1)]">
           <span className="material-symbols-outlined text-[16px]">warning</span>
-          <span className="text-xs tracking-wider uppercase font-bold">CRITICAL UPDATES</span>
+          <span className="text-xs tracking-wider uppercase font-bold">
+            CRITICAL UPDATES
+          </span>
         </div>
         <div className="ticker-wrap flex-1 text-sm font-medium">
           <div className="ticker">
@@ -126,16 +128,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               )}
 
-              <button
-                onClick={() => setActiveTab('volunteer')}
-                className={`px-2 lg:px-3 py-1.5 rounded font-medium text-xs lg:text-sm transition-all ${
-                  activeTab === 'volunteer'
-                    ? 'text-[#af101a] border-b-2 border-[#af101a] font-bold bg-[#f9f9f9]'
-                    : 'text-[#5b403d] hover:text-[#af101a] hover:bg-gray-100'
+              {currentUser && (
+                <button
+                  onClick={() => setActiveTab('volunteer')}
+                  className={`px-2 lg:px-3 py-1.5 rounded font-medium text-xs lg:text-sm transition-all ${
+                    activeTab === 'volunteer'
+                      ? 'text-[#af101a] border-b-2 border-[#af101a] font-bold bg-[#f9f9f9]'
+                      : 'text-[#5b403d] hover:text-[#af101a] hover:bg-gray-100'
                 }`}
               >
                 Volunteer
               </button>
+              )}
             </nav>
           </div>
 
@@ -152,15 +156,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Community/Volunteers Icon */}
-            <button
-              onClick={() => setActiveTab('volunteer')}
-              className="p-1.5 md:p-2 text-gray-700 hover:text-[#af101a] hover:bg-gray-100 rounded-full transition-all shrink-0"
-              title="Volunteers & Community Network"
-            >
-              <span className="material-symbols-outlined text-[20px] md:text-[24px]">groups</span>
-            </button>
+            {currentUser && (
+              <button
+                onClick={() => setActiveTab('volunteer')}
+                className="p-1.5 md:p-2 text-gray-700 hover:text-[#af101a] hover:bg-gray-100 rounded-full transition-all shrink-0"
+                title="Volunteers & Community Network"
+              >
+                <span className="material-symbols-outlined text-[20px] md:text-[24px]">groups</span>
+              </button>
+            )}
 
-            {/* User Profile Avatar / Sign Up Sign In Button */}
+            {/* User Profile Avatar / Sign In Button */}
             {currentUser ? (
               <div className="relative flex items-center shrink-0" ref={profileMenuRef}>
                 <button
@@ -168,26 +174,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-all text-left whitespace-nowrap"
                   title={`Logged in as ${currentUser?.fullName}`}
                 >
-                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0 overflow-hidden">
-                    {currentUser?.photoUrl ? (
-                      <img 
-                        src={`${currentUser.photoUrl}${currentUser.photoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`} 
-                        alt={currentUser.fullName} 
-                        className="w-full h-full object-cover" 
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      currentUser?.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'
-                    )}
+                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#af101a] text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0">
+                    {currentUser?.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'}
                   </div>
-                  <div className="hidden sm:flex flex-col">
+                  <div className="flex flex-col">
                     <span className="text-xs font-bold text-gray-800 leading-tight truncate max-w-[110px]">
                       {currentUser?.fullName}
                     </span>
                   </div>
-                  <span className="material-symbols-outlined text-gray-500 text-[18px]">
-                    arrow_drop_down
-                  </span>
                 </button>
 
                 {/* Profile Dropdown Menu */}
@@ -208,16 +202,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <span className="material-symbols-outlined text-[18px]">person</span>
                       Edit Profile
-                    </button>
-                    <button 
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#af101a] flex items-center gap-2 transition-colors"
-                      onClick={() => {
-                        setIsProfileMenuOpen(false);
-                        if (onOpenProfileSettings) onOpenProfileSettings('photo');
-                      }}
-                    >
-                      <span className="material-symbols-outlined text-[18px]">photo_camera</span>
-                      Profile Photo
                     </button>
                     <button 
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#af101a] flex items-center gap-2 transition-colors"
@@ -250,8 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={onOpenLoginModal}
                 className="bg-white text-[#af101a] hover:bg-[#ffdad6]/40 px-2 py-1.5 md:px-3.5 md:py-1.5 font-bold text-xs md:text-sm transition-colors border border-[#af101a] rounded flex items-center gap-1 shadow-xs whitespace-nowrap shrink-0"
               >
-                <span className="material-symbols-outlined text-[16px] md:text-[18px]">login</span>
-                <span className="hidden sm:inline">Sign In</span>
+                <span>Sign In</span>
               </button>
             )}
           </div>
@@ -260,4 +243,3 @@ export const Navbar: React.FC<NavbarProps> = ({
     </div>
   );
 };
-

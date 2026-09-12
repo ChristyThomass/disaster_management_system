@@ -14,6 +14,7 @@ export const ResourceInventory: React.FC<ResourceInventoryProps> = ({
   onEditItem,
   onDeleteItem,
 }) => {
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -56,22 +57,22 @@ export const ResourceInventory: React.FC<ResourceInventoryProps> = ({
   return (
     <div className="flex-1 bg-[#f9f9f9] flex flex-col overflow-y-auto">
       {/* Header */}
-      <header className="bg-white border-b border-[#e4beba] px-6 py-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4  shadow-xs">
+      <header className="bg-white border-b border-[#e4beba] px-6 py-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xs">
         <div>
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1c1c] tracking-tight">
-            Resource Inventory Management
+            Emergency Resource & Stock Inventory
           </h2>
           <p className="text-sm text-[#5b403d] mt-1">
-            Monitor and deploy critical supplies across regions.
+            Real-time tracking of medical equipment, food rations, shelters, and relief supplies across warehouses.
           </p>
         </div>
 
         <button
           onClick={onOpenAddItemModal}
-          className="bg-[#af101a] hover:bg-[#d32f2f] text-white font-bold text-sm px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+          className="bg-[#af101a] hover:bg-[#d32f2f] text-white font-bold text-sm px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm cursor-pointer"
         >
           <span className="material-symbols-outlined text-[20px]">add</span>
-          Add New Item
+          Add Resource Item
         </button>
       </header>
 

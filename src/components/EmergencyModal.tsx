@@ -79,8 +79,12 @@ export const EmergencyModal: React.FC<EmergencyModalProps> = ({
               </span>
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#1a1c1c]">Emergency Assistance & Hotline</h3>
-              <p className="text-xs text-[#5b403d]">Control Room Dispatch • Live Network</p>
+              <h3 className="text-lg font-bold text-[#1a1c1c]">
+                Emergency Assistance & Hotline
+              </h3>
+              <p className="text-xs text-[#5b403d]">
+                Control Room Dispatch • Live Network
+              </p>
             </div>
           </div>
           <button
@@ -118,7 +122,8 @@ export const EmergencyModal: React.FC<EmergencyModalProps> = ({
         {activeTab === 'call' ? (
           <>
             <div className="bg-[#ffdad6]/50 border border-[#ffb3ac] p-3 rounded-lg mb-4 text-xs text-[#93000a]">
-              <strong>Immediate Danger to Life or Safety?</strong> If you or someone near you is in immediate physical risk, contact local emergency dispatch or call directly below.
+              <strong>Immediate Danger to Life or Safety?</strong>{' '}
+              If you or someone near you is in immediate physical risk, contact local emergency dispatch or call directly below.
             </div>
 
             <div className="space-y-3 mb-6">
@@ -229,7 +234,9 @@ export const EmergencyModal: React.FC<EmergencyModalProps> = ({
                   disabled={isSubmitting}
                   className="w-full bg-[#af101a] hover:bg-[#d32f2f] text-white py-2.5 rounded font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Submitting Request...' : 'Submit Help Request'}
+                  {isSubmitting 
+                    ? 'Submitting Request...' 
+                    : 'Submit Help Request'}
                 </button>
               </>
             )}
@@ -243,4 +250,3 @@ export const EmergencyModal: React.FC<EmergencyModalProps> = ({
     </div>
   );
 };
-

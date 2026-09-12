@@ -45,7 +45,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={onOpenReportEmergencyModal}
-            className="bg-[#af101a] hover:bg-[#d32f2f] text-white text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 shadow-sm transition-all"
+            className="bg-[#af101a] hover:bg-[#d32f2f] text-white text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 shadow-sm transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">campaign</span>
             Report Emergency
@@ -59,7 +59,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({
                 setActiveTab('home');
               }
             }}
-            className="bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-600 text-xs font-semibold px-3 py-1.5 rounded flex items-center gap-1 transition-all"
+            className="bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-600 text-xs font-semibold px-3 py-1.5 rounded flex items-center gap-1 transition-all cursor-pointer"
             title="Exit Admin and Sign Out"
           >
             <span className="material-symbols-outlined text-[16px]">logout</span>
@@ -77,7 +77,7 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-t-lg transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-t-lg transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#f9f9f9] text-[#af101a] border-t-2 border-[#af101a]'
                     : 'text-gray-300 hover:text-white hover:bg-gray-800'

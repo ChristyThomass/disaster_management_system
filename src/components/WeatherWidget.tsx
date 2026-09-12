@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { UserProfile } from '../types';
 
 interface WeatherData {
   temperature: number;
@@ -45,7 +46,7 @@ const WEATHER_INTERPRETATIONS: Record<number, { label: string; icon: string }> =
   99: { label: 'Thunderstorm with heavy hail', icon: 'thunderstorm' },
 };
 
-export const WeatherWidget: React.FC = () => {
+export const WeatherWidget: React.FC<{ currentUser?: UserProfile | null }> = ({ currentUser = null }) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,9 +60,9 @@ export const WeatherWidget: React.FC = () => {
       let resolvedName = name || 'Kerala Region';
       if (!name) {
         try {
+          const lang = currentUser?.language || 'en';
           const geoRes = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
-            { headers: { 'Accept-Language': 'en' } }
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=${lang}`
           );
           if (geoRes.ok) {
             const geoData = await geoRes.json();

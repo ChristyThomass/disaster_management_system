@@ -73,7 +73,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="flex-1 min-h-screen bg-[#f9f9f9] flex flex-col font-sans">
       {/* Top Admin Command Header */}
-      <header className="bg-white border-b border-[#e4beba] py-3.5 px-4 md:px-6  shadow-2xs">
+      <header className="bg-white border-b border-[#e4beba] py-3.5 px-4 md:px-6 shadow-2xs">
         <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#af101a] text-white flex items-center justify-center font-bold shadow-sm">
@@ -98,7 +98,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={onOpenIssueAlertModal}
-              className="bg-[#af101a] hover:bg-[#d32f2f] text-white font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xs transition-all"
+              className="bg-[#af101a] hover:bg-[#d32f2f] text-white font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px]">campaign</span>
               Issue Alert
@@ -107,7 +107,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {onOpenAddCampModal && (
               <button
                 onClick={onOpenAddCampModal}
-                className="bg-[#005f7b] hover:bg-[#00485d] text-white font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xs transition-all"
+                className="bg-[#005f7b] hover:bg-[#00485d] text-white font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">add_location_alt</span>
                 Add Relief Camp
@@ -117,7 +117,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {onOpenAddInventoryModal && (
               <button
                 onClick={onOpenAddInventoryModal}
-                className="bg-[#4c56af] hover:bg-[#3b438c] text-white font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xs transition-all"
+                className="bg-[#4c56af] hover:bg-[#3b438c] text-[#ffffff] font-bold text-xs px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">add_box</span>
                 Add Inventory
@@ -178,7 +178,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </span>
             </div>
             <div>
-              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">Disaster Reports</p>
+              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">
+                Disaster Reports
+              </p>
               <p className="text-2xl md:text-3xl font-black text-[#1a1c1c]">{totalReportsCount}</p>
             </div>
           </div>
@@ -197,7 +199,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </span>
             </div>
             <div>
-              <p className="text-xs text-[#af101a] font-bold mb-0.5">Emergency SOS Alerts</p>
+              <p className="text-xs text-[#af101a] font-bold mb-0.5">
+                Emergency SOS Alerts
+              </p>
               <p className="text-2xl md:text-3xl font-black text-[#af101a]">
                 {sosAlerts.length > 0 ? sosAlerts.length : 12}
               </p>
@@ -218,7 +222,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </span>
             </div>
             <div>
-              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">Help Requests</p>
+              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">
+                Help Requests
+              </p>
               <p className="text-2xl md:text-3xl font-black text-[#1a1c1c]">{pendingRequestsCount}</p>
             </div>
           </div>
@@ -237,7 +243,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </span>
             </div>
             <div>
-              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">Active Volunteers</p>
+              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">
+                Active Volunteers
+              </p>
               <p className="text-2xl md:text-3xl font-black text-[#1a1c1c]">{activeVolunteersCount}</p>
             </div>
           </div>
@@ -256,7 +264,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </span>
             </div>
             <div>
-              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">Relief Capacity</p>
+              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">
+                Relief Capacity
+              </p>
               <p className="text-2xl md:text-3xl font-black text-[#1a1c1c]">
                 {totalCampOccupancy}/{totalCampCapacity || 15000}
               </p>
@@ -277,7 +287,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </span>
             </div>
             <div>
-              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">Supply Items</p>
+              <p className="text-xs text-[#5b403d] font-semibold mb-0.5">
+                Supply Items
+              </p>
               <p className="text-2xl md:text-3xl font-black text-[#1a1c1c]">{inventory.length || 18}</p>
             </div>
           </div>
@@ -581,4 +593,3 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     </div>
   );
 };
-

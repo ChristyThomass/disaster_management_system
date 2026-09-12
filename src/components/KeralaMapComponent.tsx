@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { ReliefLocation, SosAlert } from '../types';
+import { ReliefLocation, SosAlert, UserProfile } from '../types';
 
 interface KeralaMapComponentProps {
   locations: ReliefLocation[];
@@ -10,6 +10,7 @@ interface KeralaMapComponentProps {
   sosAlerts?: SosAlert[];
   center?: [number, number];
   zoom?: number;
+  currentUser?: UserProfile | null;
 }
 
 export const KeralaMapComponent: React.FC<KeralaMapComponentProps> = ({
@@ -19,6 +20,7 @@ export const KeralaMapComponent: React.FC<KeralaMapComponentProps> = ({
   sosAlerts = [],
   center = [10.5, 76.2], // Center of Kerala
   zoom = 8,
+  currentUser = null,
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
@@ -38,7 +40,8 @@ export const KeralaMapComponent: React.FC<KeralaMapComponentProps> = ({
   // Helper to fetch readable location name via reverse geocoding
   const fetchLocationName = async (lat: number, lng: number) => {
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16`);
+      const lang = currentUser?.language || 'en';
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16&accept-language=${lang}`);
       const data = await res.json();
       if (data && data.address) {
         const addr = data.address;
