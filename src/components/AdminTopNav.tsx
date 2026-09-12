@@ -4,14 +4,12 @@ import { NavigationTab } from '../types';
 interface AdminTopNavProps {
   activeTab: NavigationTab;
   setActiveTab: (tab: NavigationTab) => void;
-  onOpenReportEmergencyModal: () => void;
   onExitAdmin?: () => void;
 }
 
 export const AdminTopNav: React.FC<AdminTopNavProps> = ({
   activeTab,
   setActiveTab,
-  onOpenReportEmergencyModal,
   onExitAdmin,
 }) => {
   const adminNavItems: { id: NavigationTab; label: string; icon: string }[] = [
@@ -41,16 +39,8 @@ export const AdminTopNav: React.FC<AdminTopNavProps> = ({
           </span>
         </div>
 
-        {/* Right: Quick Emergency Trigger & Exit */}
+        {/* Right: Exit Admin */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={onOpenReportEmergencyModal}
-            className="bg-[#af101a] hover:bg-[#d32f2f] text-white text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 shadow-sm transition-all cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[16px]">campaign</span>
-            Report Emergency
-          </button>
-
           <button
             onClick={() => {
               if (onExitAdmin) {

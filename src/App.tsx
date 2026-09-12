@@ -356,10 +356,6 @@ export default function App() {
         <AdminTopNav
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          onOpenReportEmergencyModal={() => {
-            setEmergencyModalTab('request');
-            setIsEmergencyModalOpen(true);
-          }}
           onExitAdmin={handleExitAdmin}
         />
       )}
